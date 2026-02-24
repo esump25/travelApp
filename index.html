@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Wanderer AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#fdfdff]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const destinations = [
+            { name: "Amalfi Coast, Italy", city: "Amalfi", climate: "Mediterranean", budget: "Luxury", activity: "Relaxing", cuisine: "Pasta/Pizza", color: "Ocean Blue", desc: "Crystal clear waters and world-class lemons." },
+            { name: "Kyoto, Japan", city: "Kyoto", climate: "Mild/City", budget: "Mid-Range", activity: "Culture", cuisine: "Sushi/Fresh", color: "Forest Green", desc: "Ancient temples and serene bamboo groves." },
+            { name: "Zermatt, Switzerland", city: "Zermatt", climate: "Cold/Snowy", budget: "Luxury", activity: "Adventure", cuisine: "Comfort Food", color: "Cloud White", desc: "The home of the Matterhorn and elite skiing." },
+            { name: "Oaxaca, Mexico", city: "Oaxaca", climate: "Tropical", budget: "Budget", activity: "Culture", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A vibrant hub of art, mezcal, and incredible street food." },
+            { name: "Reykjavik, Iceland", city: "Reykjavik", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Adventure", cuisine: "Seafood", color: "Neon Purple", desc: "Black sand beaches and dancing northern lights." },
+            { name: "Koh Samui, Thailand", city: "Koh Samui", climate: "Tropical", budget: "Budget", activity: "Relaxing", cuisine: "Spicy/Bold", color: "Ocean Blue", desc: "Luxury villas at backpacker prices." },
+            { name: "New York City, USA", city: "New York", climate: "Mild/City", budget: "Mid-Range", activity: "Nightlife", cuisine: "Street Food", color: "Neon Purple", desc: "The city that never sleeps, with a flavor for everyone." },
+            { name: "Patagonia, Chile", city: "Torres del Paine", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Hiking", cuisine: "Comfort Food", color: "Forest Green", desc: "Rugged glaciers and untouched wilderness." }
+        ];
+
+        const questions = [
+            { id: 'climate', q: "What's the weather vibe?", options: ['Tropical', 'Cold/Snowy', 'Mild/City', 'Mediterranean'] },
+            { id: 'budget', q: "Price range for the whole trip?", options: ['Budget', 'Mid-Range', 'Luxury'] },
+            { id: 'activity', q: "What's the main agenda?", options: ['Adventure', 'Relaxing', 'Culture', 'Nightlife'] },
+            { id: 'duration', q: "How long are you staying?", options: ['Quick Escape (3 days)', 'A Week', 'Deep Dive (2+ weeks)'] },
+            { id: 'traveler', q: "What kind of traveler are you?", options: ['Solo Explorer', 'Couple', 'Group of Friends', 'Family'] },
+            { id: 'cuisine', q: "Which food makes you happiest?", options: ['Spicy/Bold', 'Fresh Seafood', 'Pasta/Pizza', 'Street Food'] },
+            { id: 'color', q: "Pick a color for your mood:", options: ['Ocean Blue', 'Forest Green', 'Sunset Orange', 'Neon Purple'] },
+            { id: 'pace', q: "How's your daily pace?", options: ['100mph All Day', 'Chill & Slow', 'A Healthy Mix'] }
+        ];
+
+        function TravelApp() {
+            const [step, setStep] = useState(0);
+            const [answers, setAnswers] = useState({});
+            const [results, setResults] = useState([]);
+            const [loading, setLoading] = useState(false);
+
+            const handleSelection = (option) => {
+                const newAnswers = { ...answers, [questions[step].id]: option };
+                setAnswers(newAnswers);
+                if (step < questions.length - 1) {
+                    setStep(step + 1);
+                } else {
+                    processResults(newAnswers);
+                }
+            };
+
+            const processResults = async (final) => {
+                setLoading(true);
+                const scored = destinations.map(dest => {
+                    let score = 0;
+                    if (dest.climate === final.climate) score += 5;
+                    if (dest.budget === final.budget) score += 3;
+                    if (dest.activity === final.activity) score += 4;
+                    if (dest.cuisine === final.cuisine) score += 2;
+                    if (dest.color === final.color) score += 1;
+                    return { ...dest, score };
+                });
+                
+                const top3 = scored.sort((a, b) => b.score - a.score).slice(0, 3);
+                
+                // CHANGE THIS URL TO YOUR RENDER BACKEND URL
+                const backendUrl = "https://project2-xcr2.onrender.com";
+
+                try {
+                    const withWeather = await Promise.all(top3.map(async (dest) => {
+                        const response = await fetch(`${backendUrl}/api/weather?city=${dest.city}`);
+                        const weatherData = await response.json();
+                        return { 
+                            ...dest, 
+                            temp: weatherData.main ? Math.round(weatherData.main.temp) : "N/A",
+                            condition: weatherData.weather ? weatherData.weather[0].main : ""
+                        };
+                    }));
+                    setResults(withWeather);
+                } catch (error) {
+                    console.error("Weather fetch failed", error);
+                    setResults(top3);
+                }
+                setLoading(false);
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-[#fdfdff]">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                            <p className="text-slate-600 font-bold">Consulting the AI Wanderer...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (results.length > 0) {
+                return (
+                    <div className="min-h-screen p-8 bg-[#f8faff] flex flex-col items-center">
+                        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">The Results Are In!</h1>
+                        <p className="text-slate-500 mb-10">We found 3 places that match your vibe.</p>
+                        
+                        <div className="grid gap-6 w-full max-w-4xl">
+                            {results.map((dest, i) => (
+                                <div key={i} className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                                    <div className="text-5xl bg-blue-50 w-24 h-24 rounded-full flex items-center justify-center">📍</div>
+                                    <div className="flex-1 text-center md:text-left">
+                                        <h2 className="text-2xl font-bold text-slate-800">{dest.name}</h2>
+                                        <p className="text-slate-500 mt-2">{dest.desc}</p>
+                                        {dest.temp && (
+                                            <p className="text-blue-600 font-bold mt-2 italic">
+                                                Live Weather: {dest.temp}°C {dest.condition && `(${dest.condition})`}
+                                            </p>
+                                        )}
+                                        <div className="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
+                                            <span className="px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-bold uppercase tracking-wider">{dest.climate}</span>
+                                            <span className="px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-bold uppercase tracking-wider">{dest.activity}</span>
+                                        </div>
+                                    </div>
+                                    <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition active:scale-95">Explore This Trip</button>
+                                </div>
+                            ))}
+                        </div>
+                        <button onClick={() => window.location.reload()} className="mt-12 text-slate-400 hover:text-blue-600 font-bold underline">Start Over</button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#fdfdff]">
+                    <div className="w-full max-w-md bg-slate-100 h-1 rounded-full mb-12 overflow-hidden">
+                        <div className="bg-blue-600 h-full transition-all duration-700" style={{ width: `${((step + 1) / questions.length) * 100}%` }}></div>
+                    </div>
+
+                    <div className="w-full max-w-lg bg-white p-10 rounded-[3rem] shadow-xl shadow-blue-500/5 border border-slate-50">
+                        <p className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Question {step + 1} of {questions.length}</p>
+                        <h2 className="text-3xl font-extrabold text-slate-900 mb-10 leading-tight">{questions[step].q}</h2>
+                        
+                        <div className="grid gap-4">
+                            {questions[step].options.map((opt) => (
+                                <button
+                                    key={opt}
+                                    onClick={() => handleSelection(opt)}
+                                    className="group w-full p-6 text-left rounded-[1.5rem] border-2 border-slate-50 hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-200"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-lg font-semibold text-slate-700 group-hover:text-blue-700">{opt}</span>
+                                        <div className="w-6 h-6 rounded-full border-2 border-slate-200 group-hover:border-blue-500 group-hover:bg-blue-500 flex items-center justify-center transition-all">
+                                            <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TravelApp />);
+    </script>
+</body>
+</html>
