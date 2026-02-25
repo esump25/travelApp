@@ -9,8 +9,19 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Gravitas+One&display=swap');
+
+        :root {
+        /* Colors from your uploaded image */
+        --blossom: #FFD1F3;
+        --summer-sky: #CCF6FF;
+        --sour-apple: #C7EF8E;
+        --bubblegum: #FF71DA;
+        --blueberry: #0066FF;
+        }
+
+
+        body { font-family: 'Bricolage Grotesque', sans-serif; }
     </style>
 </head>
 <body class="bg-[#fdfdff]">
@@ -20,14 +31,18 @@
         const { useState } = React;
 
         const destinations = [
-            { name: "Amalfi Coast, Italy", city: "Amalfi", climate: "Mediterranean", budget: "Luxury", activity: "Relaxing", cuisine: "Pasta/Pizza", color: "Ocean Blue", desc: "Crystal clear waters and world-class lemons." },
-            { name: "Kyoto, Japan", city: "Kyoto", climate: "Mild/City", budget: "Mid-Range", activity: "Culture", cuisine: "Sushi/Fresh", color: "Forest Green", desc: "Ancient temples and serene bamboo groves." },
-            { name: "Zermatt, Switzerland", city: "Zermatt", climate: "Cold/Snowy", budget: "Luxury", activity: "Adventure", cuisine: "Comfort Food", color: "Cloud White", desc: "The home of the Matterhorn and elite skiing." },
-            { name: "Oaxaca, Mexico", city: "Oaxaca", climate: "Tropical", budget: "Budget", activity: "Culture", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A vibrant hub of art, mezcal, and incredible street food." },
-            { name: "Reykjavik, Iceland", city: "Reykjavik", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Adventure", cuisine: "Seafood", color: "Neon Purple", desc: "Black sand beaches and dancing northern lights." },
-            { name: "Koh Samui, Thailand", city: "Koh Samui", climate: "Tropical", budget: "Budget", activity: "Relaxing", cuisine: "Spicy/Bold", color: "Ocean Blue", desc: "Luxury villas at backpacker prices." },
-            { name: "New York City, USA", city: "New York", climate: "Mild/City", budget: "Mid-Range", activity: "Nightlife", cuisine: "Street Food", color: "Neon Purple", desc: "The city that never sleeps, with a flavor for everyone." },
-            { name: "Patagonia, Chile", city: "Torres del Paine", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Hiking", cuisine: "Comfort Food", color: "Forest Green", desc: "Rugged glaciers and untouched wilderness." }
+            { name: "Amalfi Coast, Italy", city: "Amalfi", emoji: "🍝", climate: "Mediterranean", budget: "Luxury", activity: "Relaxing", cuisine: "Pasta/Pizza", color: "Ocean Blue", desc: "Crystal clear waters and world-class lemons." },
+            { name: "Kyoto, Japan", city: "Kyoto", emoji: "🎏", climate: "Mild/City", budget: "Mid-Range", activity: "Culture", cuisine: "Sushi/Fresh", color: "Forest Green", desc: "Ancient temples and serene bamboo groves." },
+            { name: "Zermatt, Switzerland", city: "Zermatt", emoji: "🇨🇭", climate: "Cold/Snowy", budget: "Luxury", activity: "Adventure", cuisine: "Comfort Food", color: "Forest Green", desc: "The home of the Matterhorn and elite skiing." },
+            { name: "Oaxaca, Mexico", city: "Oaxaca", emoji: "🌮", climate: "Tropical", budget: "Budget", activity: "Culture", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A vibrant hub of art, meat, and incredible street food." },
+            { name: "Reykjavik, Iceland", city: "Reykjavik", emoji: "❄️", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Adventure", cuisine: "Seafood", color: "Neon Purple", desc: "Black sand beaches and dancing northern lights." },
+            { name: "Cappadocia, Turkey", city: "Goreme", emoji: "🧚‍♀️", climate: "Mild/City", budget: "Mid-Range", activity: "Adventure", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "High-altitude desert plateau with fairy chimneys and caves." },
+            { name: "New York City, USA", city: "New York", emoji: "🏙️", climate: "Mild/City", budget: "Mid-Range", activity: "Nightlife", cuisine: "Street Food", color: "Neon Purple", desc: "The city that never sleeps, with a flavor for everyone." },
+            { name: "Patagonia, Chile", city: "Puerto Natales", emoji: "🏞️", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Hiking", cuisine: "Comfort Food", color: "Forest Green", desc: "Rugged glaciers and untouched wilderness." },
+            { name: "Dingle, Ireland", city: "Dingle", emoji: "🍀", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Culture", cuisine: "Street Food", color: "Forest Green", desc: "Rolling green hills full of life and culture." },
+            { name: "Ibiza, Spain", city: "Ibiza", emoji: "🍸", climate: "Tropical", budget: "Luxury", activity: "Nightlife", cuisine: "Fresh Seafood", color: "Neon Purple", desc: "A perfect fast-paced party destination." },
+            { name: "Sydney, Australia", city: "Sydney", emoji: "🦘", climate: "Mild/City", budget: "Mid-Range", activity: "Culture", cuisine: "Street Food", color: "Ocean Blue", desc: "A getaway to coastal city with sight-seeing opportunities." },
+            { name: "Austin, Texas", city: "Austin", emoji: "🤠", climate: "Mild/City", budget: "Budget", activity: "Nightlife", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A wild ride with the perfect mix of country and city vibes." }
         ];
 
         const questions = [
@@ -46,6 +61,8 @@
             const [answers, setAnswers] = useState({});
             const [results, setResults] = useState([]);
             const [loading, setLoading] = useState(false);
+            const [selectedItinerary, setSelectedItinerary] = useState(null);
+            const [generating, setGenerating] = useState(false);
 
             const handleSelection = (option) => {
                 const newAnswers = { ...answers, [questions[step].id]: option };
@@ -55,6 +72,27 @@
                 } else {
                     processResults(newAnswers);
                 }
+            };
+
+            const fetchItinerary = async (cityName) => {
+                setGenerating(true);
+                const params = new URLSearchParams({
+                    city: cityName,
+                    budget: answers.budget,
+                    activity: answers.activity,
+                    duration: answers.duration,
+                    traveler: answers.traveler,
+                    cuisine: answers.cuisine,
+                    pace: answers.pace
+                });
+                try {
+                    const response = await fetch(`https://project2-xcr2.onrender.com/api/itinerary?${params.toString()}`);
+                    const data = await response.json();
+                    setSelectedItinerary({ city: cityName, text: data.itinerary });
+                } catch (error) {
+                    console.error("AI Generation failed", error);
+                }
+                setGenerating(false);
             };
 
             const processResults = async (final) => {
@@ -70,24 +108,29 @@
                 });
                 
                 const top3 = scored.sort((a, b) => b.score - a.score).slice(0, 3);
-                
-                // CHANGE THIS URL TO YOUR RENDER BACKEND URL
                 const backendUrl = "https://project2-xcr2.onrender.com";
 
                 try {
                     const withWeather = await Promise.all(top3.map(async (dest) => {
-                        const response = await fetch(`${backendUrl}/api/weather?city=${dest.city}`);
+                        // FIX 1: Use encodeURIComponent for cities with spaces (like New York)
+                        const response = await fetch(`${backendUrl}/api/weather?city=${encodeURIComponent(dest.city)}`);
+                        if (!response.ok) return { ...dest, temp: "N/A" };
+                        
                         const weatherData = await response.json();
+                        
+                        // FIX 2: Check specifically for undefined so 0 degrees isn't ignored
+                        const hasTemp = weatherData.main && typeof weatherData.main.temp !== 'undefined';
+            
                         return { 
                             ...dest, 
-                            temp: weatherData.main ? Math.round(weatherData.main.temp) : "N/A",
+                            temp: hasTemp ? Math.round(weatherData.main.temp) : "N/A",
                             condition: weatherData.weather ? weatherData.weather[0].main : ""
                         };
                     }));
                     setResults(withWeather);
                 } catch (error) {
                     console.error("Weather fetch failed", error);
-                    setResults(top3);
+                    setResults(top3.map(d => ({ ...d, temp: "N/A" })));
                 }
                 setLoading(false);
             };
@@ -106,30 +149,54 @@
             if (results.length > 0) {
                 return (
                     <div className="min-h-screen p-8 bg-[#f8faff] flex flex-col items-center">
-                        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">The Results Are In!</h1>
-                        <p className="text-slate-500 mb-10">We found 3 places that match your vibe.</p>
+                        <h1 className="text-4xl font-extrabold text-[var(--bubblegum)] mb-2">The Results Are In!</h1>
+                        <p className="text-[var(--blueberry)] mb-10">We found 3 places that match your vibe.</p>
                         
                         <div className="grid gap-6 w-full max-w-4xl">
                             {results.map((dest, i) => (
-                                <div key={i} className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
-                                    <div className="text-5xl bg-blue-50 w-24 h-24 rounded-full flex items-center justify-center">📍</div>
+                                <div key={i} className="bg-[var(--blossom)] rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                                    <div className="text-5xl bg-[var(--summer-sky)] w-24 h-24 rounded-full flex items-center justify-center">{dest.emoji}</div>
                                     <div className="flex-1 text-center md:text-left">
-                                        <h2 className="text-2xl font-bold text-slate-800">{dest.name}</h2>
-                                        <p className="text-slate-500 mt-2">{dest.desc}</p>
-                                        {dest.temp && (
-                                            <p className="text-blue-600 font-bold mt-2 italic">
+                                        <h2 className="text-2xl font-bold text-[var(--blueberry)]">{dest.name}</h2>
+                                        <p className="text-[var(--bubblegum)] mt-2">{dest.desc}</p>
+                                        
+                                        {/* FIX 3: Changed check to allow 0 to show up */}
+                                        {dest.temp !== "N/A" && (
+                                            <p className="text-[var(--blueberry)] font-bold mt-2 italic">
                                                 Live Weather: {dest.temp}°C {dest.condition && `(${dest.condition})`}
                                             </p>
                                         )}
+
                                         <div className="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
-                                            <span className="px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-bold uppercase tracking-wider">{dest.climate}</span>
-                                            <span className="px-4 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-bold uppercase tracking-wider">{dest.activity}</span>
+                                            <span className="px-4 py-1 bg-[var(--sour-apple)] text-[var(--bubblegum)] rounded-full text-xs font-bold uppercase tracking-wider">{dest.climate}</span>
+                                            <span className="px-4 py-1 bg-[var(--summer-sky)] text-[var(--blueberry)] rounded-full text-xs font-bold uppercase tracking-wider">{dest.activity}</span>
                                         </div>
                                     </div>
-                                    <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition active:scale-95">Explore This Trip</button>
+                                    <button 
+                                        onClick={() => fetchItinerary(dest.name)}
+                                        className="bg-[var(--sour-apple)] text-[var(--bubblegum)] px-8 py-4 rounded-2xl font-bold hover:scale-105 transition active:scale-95"
+                                    >
+                                        {generating ? "Planning. . ." : "Explore This Trip"}
+                                    </button>
                                 </div>
                             ))}
                         </div>
+                        {selectedItinerary && (
+                            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                                <div className="bg-white rounded-[2rem] p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
+                                    <h2 className="text-3xl font-bold text-[var(--blueberry)] mb-4">Your Custom Trip to {selectedItinerary.city}</h2>
+                                    <div className="text-slate-700 leading-relaxed whitespace-pre-wrap italic">
+                                        {selectedItinerary.text}
+                                    </div>
+                                    <button 
+                                        onClick={() => setSelectedItinerary(null)}
+                                        className="mt-8 w-full py-4 bg-[var(--summer-sky)] text-[var(--blueberry)] rounded-xl font-bold hover:bg-[var(--blossom)] transition"
+                                    >
+                                        Close Itinerary
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                         <button onClick={() => window.location.reload()} className="mt-12 text-slate-400 hover:text-blue-600 font-bold underline">Start Over</button>
                     </div>
                 );
@@ -137,29 +204,31 @@
 
             return (
                 <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#fdfdff]">
-                    <div className="w-full max-w-md bg-slate-100 h-1 rounded-full mb-12 overflow-hidden">
+                    <div className="w-full max-w-md bg-slate-100 h-1 rounded-none mb-12 overflow-hidden">
                         <div className="bg-blue-600 h-full transition-all duration-700" style={{ width: `${((step + 1) / questions.length) * 100}%` }}></div>
                     </div>
 
-                    <div className="w-full max-w-lg bg-white p-10 rounded-[3rem] shadow-xl shadow-blue-500/5 border border-slate-50">
-                        <p className="text-blue-600 font-black text-xs uppercase tracking-[0.2em] mb-4">Question {step + 1} of {questions.length}</p>
-                        <h2 className="text-3xl font-extrabold text-slate-900 mb-10 leading-tight">{questions[step].q}</h2>
-                        
-                        <div className="grid gap-4">
-                            {questions[step].options.map((opt) => (
-                                <button
-                                    key={opt}
-                                    onClick={() => handleSelection(opt)}
-                                    className="group w-full p-6 text-left rounded-[1.5rem] border-2 border-slate-50 hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-200"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-lg font-semibold text-slate-700 group-hover:text-blue-700">{opt}</span>
-                                        <div className="w-6 h-6 rounded-full border-2 border-slate-200 group-hover:border-blue-500 group-hover:bg-blue-500 flex items-center justify-center transition-all">
-                                            <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                   <div className="w-full max-w-lg bg-[var(--blossom)] p-10 rounded-[3rem] shadow-xl shadow-blue-500/5">
+                        <div className="w-full bg-[var(--sour-apple)] p-10 rounded-2xl">
+                            <p className="text-[var(--bubblegum)] font-black text-xs uppercase tracking-[0.2em] mb-4">Question {step + 1} of {questions.length}</p>
+                            <h2 className="text-3xl font-extrabold text-[var(--blueberry)] mb-10 leading-tight">{questions[step].q}</h2>
+                            
+                            <div className="grid gap-4">
+                                {questions[step].options.map((opt) => (
+                                    <button
+                                        key={opt}
+                                        onClick={() => handleSelection(opt)}
+                                        className="group w-full p-6 text-left rounded-none border-2 border-slate-50 hover:border-[var(--bubblegum)] hover:bg-blue-50/50 transition-all duration-200"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-lg font-semibold text-[var(--blueberry)] group-hover:text-blue-700">{opt}</span>
+                                            <div className="w-6 h-6 rounded-full border-2 border-slate-200 group-hover:border-[var(--bubblegum)] group-hover:bg-[var(--blossom)] flex items-center justify-center transition-all">
+                                                <div className="w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </button>
-                            ))}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,4 +239,4 @@
         root.render(<TravelApp />);
     </script>
 </body>
-</html> 
+</html>
