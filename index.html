@@ -42,18 +42,19 @@
             { name: "Dingle, Ireland", city: "Dingle", emoji: "🍀", climate: "Cold/Snowy", budget: "Mid-Range", activity: "Culture", cuisine: "Street Food", color: "Forest Green", desc: "Rolling green hills full of life and culture." },
             { name: "Ibiza, Spain", city: "Ibiza", emoji: "🍸", climate: "Tropical", budget: "Luxury", activity: "Nightlife", cuisine: "Fresh Seafood", color: "Neon Purple", desc: "A perfect fast-paced party destination." },
             { name: "Sydney, Australia", city: "Sydney", emoji: "🦘", climate: "Mild/City", budget: "Mid-Range", activity: "Culture", cuisine: "Street Food", color: "Ocean Blue", desc: "A getaway to coastal city with sight-seeing opportunities." },
-            { name: "Austin, Texas", city: "Austin", emoji: "🤠", climate: "Mild/City", budget: "Budget", activity: "Nightlife", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A wild ride with the perfect mix of country and city vibes." }
+            { name: "Austin, Texas", city: "Austin", emoji: "🤠", climate: "Mild/City", budget: "Budget", activity: "Nightlife", cuisine: "Spicy/Bold", color: "Sunset Orange", desc: "A wild ride with the perfect mix of country and city vibes." },
+            { name: "Nassau, Bahamas", city: "Nassau", emoji: "🌊", climate: "Tropical", budget: "Luxury", activity: "Relaxing", cuisine: "Fresh Seafood", color: "Ocean Blue", desc: "A pefect trip full of clear waters, high UV, and coral reefs" }
         ];
 
         const questions = [
-            { id: 'climate', q: "What's the weather vibe?", options: ['Tropical', 'Cold/Snowy', 'Mild/City', 'Mediterranean'] },
+            { id: 'climate', q: "What kind of weather are you looking for?", options: ['Tropical', 'Cold/Snowy', 'Mild/City', 'Mediterranean'] },
             { id: 'budget', q: "Price range for the whole trip?", options: ['Budget', 'Mid-Range', 'Luxury'] },
             { id: 'activity', q: "What's the main agenda?", options: ['Adventure', 'Relaxing', 'Culture', 'Nightlife'] },
-            { id: 'duration', q: "How long are you staying?", options: ['Quick Escape (3 days)', 'A Week', 'Deep Dive (2+ weeks)'] },
+            { id: 'duration', q: "How long are you staying?", options: ['Quick Escape (3 days)', 'A Week', 'Deep Dive (2 weeks)'] },
             { id: 'traveler', q: "What kind of traveler are you?", options: ['Solo Explorer', 'Couple', 'Group of Friends', 'Family'] },
             { id: 'cuisine', q: "Which food makes you happiest?", options: ['Spicy/Bold', 'Fresh Seafood', 'Pasta/Pizza', 'Street Food'] },
             { id: 'color', q: "Pick a color for your mood:", options: ['Ocean Blue', 'Forest Green', 'Sunset Orange', 'Neon Purple'] },
-            { id: 'pace', q: "How's your daily pace?", options: ['100mph All Day', 'Chill & Slow', 'A Healthy Mix'] }
+            { id: 'pace', q: "How's your daily pace?", options: ['Fast-moving', 'Chill & Slow', 'A Healthy Mix'] }
         ];
 
         function TravelApp() {
@@ -82,7 +83,6 @@
                     activity: answers.activity,
                     duration: answers.duration,
                     traveler: answers.traveler,
-                    cuisine: answers.cuisine,
                     pace: answers.pace
                 });
                 try {
@@ -163,7 +163,7 @@
                                         {/* FIX 3: Changed check to allow 0 to show up */}
                                         {dest.temp !== "N/A" && (
                                             <p className="text-[var(--blueberry)] font-bold mt-2 italic">
-                                                Live Weather: {dest.temp}°C {dest.condition && `(${dest.condition})`}
+                                                Live Weather: {dest.temp}°C / {Math.round((dest.temp * 9/5) + 32)}°F {dest.condition && `(${dest.condition})`}
                                             </p>
                                         )}
 
