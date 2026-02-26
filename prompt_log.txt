@@ -1,0 +1,20 @@
+I created this using Gemini. 
+To create this, I prompted Gemini with the project writeup and my idea which I created by brainstorming with my friends, and what kind of 
+application would be helpful to them. I seperated my prompts into phases as not to overwhelm the AI and create bugs which I couldn't understand. 
+I started with just the quiz logic, then the fetching results, then incorporation of the weather API, and then the itinerary creation through Gemini.
+I heavily modified my app.py (located in https://github.com/esump25/project2 ). This was what I spent the most time working on as it took a lot 
+of effort manually debugging it. I also found that it was better to modify this myself because Gemini repeatedly gave more and more complex anwers
+which did not serve as solutions. I also manually edited the UI a lot to achieve the look I was looking for. 
+Important Prompts:
+1. okay basically i want to do a web app for travel. first you take a quiz on things like what kind of climate you want, price range, 
+activities you like, when you want to travel and for how long, the kind of traveler you are and stuff like that. also some more light 
+and fun questions like favorite color or favorite type of cuisine. then, based on that i want to suggest the user at least 3 iteneraries 
+for different locations based on the prefrecnes. I want to use an api here to fetch possible travel details like flights/hotels/weather based 
+on dates and provide those in the itenerary.
+
+2. what is the var {vibe} from? i want to refine this prompt so i need to understand it
+
+3. okay i just restarted it. i have the same loading issue. the issue is with the weather api loading results section not the itenrary.
+(this began my debugging journey)
+
+4.
