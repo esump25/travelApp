@@ -1,4 +1,4 @@
-Global Wanderer AI is a full-stack travel app I created using Gemini to help people choose and plan thier vacations. 
+Wanderose AI is a full-stack travel app I created using Gemini to help people choose and plan thier vacations. 
 Using this app is fairly easy. After accessing it through the URL, the user takes a short quiz based on thier wants and needs in a trip.
 Then, they are shown the top three places that align with thier choices and the current weather in those locations.
 Then, they have the ability to click the "Explore This Trip" button which provides a gemini-powered itinerary based on thier choices and chosen location.
