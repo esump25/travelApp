@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Wanderer AI</title>
+    <title>Wanderose AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -24,7 +24,7 @@
         body { font-family: 'Bricolage Grotesque', sans-serif; }
     </style>
 </head>
-<body class="bg-[#fdfdff]">
+<body class="bg-[var(--summer-sky)]">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -58,6 +58,7 @@
         ];
 
         function TravelApp() {
+            const [started, setStarted] = useState(false);
             const [step, setStep] = useState(0);
             const [answers, setAnswers] = useState({});
             const [results, setResults] = useState([]);
@@ -134,10 +135,27 @@
                 }
                 setLoading(false);
             };
+            
+            if (!started) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[var(--sour-apple)] text-center">
+                        <h1 className="text-7xl font-black text-[var(--blueberry)] mb-4 title-font">Wanderose AI</h1>
+                        <p className="text-xl text-[var(--bubblegum)] max-w-md mb-8 font-bold leading-tight">
+                            Your custom personal planner for everything you could want in a vacation and more!
+                        </p>
+                        <button 
+                            onClick={() => setStarted(true)}
+                            className="bg-[var(--blossom)] text-[var(--blueberry)] px-12 py-5 rounded-full text-2xl font-black shadow-xl hover:scale-110 transition active:scale-95 flex items-center gap-3"
+                        >
+                            Start Planning!
+                        </button>
+                    </div>
+                );
+            }
 
             if (loading) {
                 return (
-                    <div className="min-h-screen flex items-center justify-center bg-[#fdfdff]">
+                    <div className="min-h-screen flex items-center justify-center bg-[var(--summer-sky)]">
                         <div className="text-center">
                             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
                             <p className="text-slate-600 font-bold">Consulting the AI Wanderer...</p>
@@ -148,7 +166,7 @@
 
             if (results.length > 0) {
                 return (
-                    <div className="min-h-screen p-8 bg-[#f8faff] flex flex-col items-center">
+                    <div className="min-h-screen p-8 bg-[var(--summer-sky)] flex flex-col items-center">
                         <h1 className="text-4xl font-extrabold text-[var(--bubblegum)] mb-2">The Results Are In!</h1>
                         <p className="text-[var(--blueberry)] mb-10">We found 3 places that match your vibe.</p>
                         
@@ -203,7 +221,7 @@
             }
 
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#fdfdff]">
+                <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[var(--summer-sky)]">
                     <div className="w-full max-w-md bg-slate-100 h-1 rounded-none mb-12 overflow-hidden">
                         <div className="bg-blue-600 h-full transition-all duration-700" style={{ width: `${((step + 1) / questions.length) * 100}%` }}></div>
                     </div>
