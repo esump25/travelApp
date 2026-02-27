@@ -6,6 +6,7 @@ I heavily modified my app.py (located in https://github.com/esump25/project2 ). 
 of effort manually debugging it. I also found that it was better to modify this myself because Gemini repeatedly gave more and more complex anwers
 which did not serve as solutions. I also manually edited the UI a lot to achieve the look I was looking for. 
 Important Prompts:
+
 1. okay basically i want to do a web app for travel. first you take a quiz on things like what kind of climate you want, price range, 
 activities you like, when you want to travel and for how long, the kind of traveler you are and stuff like that. also some more light 
 and fun questions like favorite color or favorite type of cuisine. then, based on that i want to suggest the user at least 3 iteneraries 
@@ -17,4 +18,18 @@ on dates and provide those in the itenerary.
 3. okay i just restarted it. i have the same loading issue. the issue is with the weather api loading results section not the itenrary.
 (this began my debugging journey)
 
-4.
+4. i just feel like since we put in gevent our errors have been worse
+(this caused me to go back to older versions of app.py and do research to code this myself)
+
+5. I  want the prompt to include aspects from these questions:
+
+{ id: 'budget', q: "Price range for the whole trip?", options: ['Budget', 'Mid-Range', 'Luxury'] },
+
+{ id: 'activity', q: "What's the main agenda?", options: ['Adventure', 'Relaxing', 'Culture', 'Nightlife'] },
+
+{ id: 'duration', q: "How long are you staying?", options: ['Quick Escape (3 days)', 'A Week', 'Deep Dive (2+ weeks)'] },
+
+{ id: 'traveler', q: "What kind of traveler are you?", options: ['Solo Explorer', 'Couple', 'Group of Friends',
+
+6. its wrong it said its 45 dgerees. do u have another locatiion that has all the same attributes that ive given the bahamas with a more reliable country code
+(debugging incorrect responses from the open weather API)
